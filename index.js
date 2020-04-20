@@ -9,7 +9,7 @@ function init() {
 }
 
 function getFood() {
-  fetch(`${url}/fooditems`)
+  fetch(`${url}/fooditems?_sort=Expirationdate:ASC`)
     .then((data) => data.json())
     .then((result) => {
       allFood = result;
