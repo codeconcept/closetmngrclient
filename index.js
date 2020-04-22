@@ -7,6 +7,7 @@ const foodTitle = addfoodForm.foodtitle;
 const expirationDate = addfoodForm.expirationdate;
 
 addfoodForm.addEventListener("submit", addFood);
+let lastAddedItem = null;
 
 init();
 
@@ -21,6 +22,9 @@ function getFood() {
       allFood = result;
       console.log("allFood", allFood);
       renderFood(allFood);
+      if (lastAddedItem !== null) {
+        flashLastAddedItem(lastAddedItem);
+      }
     })
     .catch((err) => {
       console.error("error fetching food", err);
@@ -30,7 +34,7 @@ function getFood() {
 function renderFood(food) {
   let list = [];
   food.forEach((f) => {
-    const item = `<li>${f.title}</li>`;
+    const item = `<li id=${f.id}>${f.title}</li>`;
     list = [...list, item];
   });
   console.log("list", list);
@@ -44,7 +48,7 @@ function addFood(e) {
   const date = expirationDate.value;
   console.log(title, date);
   const payload = {
-    title: title,
+    title,
     expirationdate: date,
     category: "default",
   };
@@ -56,15 +60,29 @@ function addFood(e) {
     },
     body: JSON.stringify(payload),
   })
-    .then((response) => {
-      console.log(response);
+    .then((response) => response.json())
+    .then((data) => {
       // empty form
       foodTitle.value = "";
       expirationDate.value = "";
+      lastAddedItem = data;
       // retrieve latest food
       getFood();
     })
     .catch((err) => {
       console.error(err);
     });
+}
+
+function flashLastAddedItem(item) {
+  console.log(item);
+  const lastAddedItemElement = document.getElementById(`${item.id}`);
+  console.log(item.id, lastAddedItemElement);
+
+  lastAddedItemElement.classList.add("just-added");
+
+  setTimeout(() => {
+    lastAddedItemElement.classList.remove("just-added");
+    lastAddedItem = null;
+  }, 2000);
 }
