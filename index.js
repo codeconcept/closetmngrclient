@@ -34,7 +34,8 @@ function getFood() {
 function renderFood(food) {
   let list = [];
   food.forEach((f) => {
-    const item = `<li id=${f.id}>${f.title}</li>`;
+    const dateFR = convertInFrenchDateString(f.expirationdate);
+    const item = `<li id=${f.id}>${f.title} à consommer avant le ${dateFR}</li>`;
     list = [...list, item];
   });
   console.log("list", list);
@@ -72,6 +73,11 @@ function addFood(e) {
     .catch((err) => {
       console.error(err);
     });
+}
+
+function convertInFrenchDateString(dateString) {
+  const dateFragments = dateString.split("-");
+  return `${dateFragments[2]}/${dateFragments[1]}/${dateFragments[0]}`;
 }
 
 function flashLastAddedItem(item) {
