@@ -2,6 +2,12 @@ const foodDiv = document.querySelector(".food");
 const url = "http://localhost:1337";
 let allFood = [];
 
+const addfoodForm = document.forms.addfood;
+const foodTitle = addfoodForm.foodtitle;
+const expirationDate = addfoodForm.expirationdate;
+
+addfoodForm.addEventListener("submit", addFood);
+
 init();
 
 function init() {
@@ -29,4 +35,36 @@ function renderFood(food) {
   });
   console.log("list", list);
   foodDiv.innerHTML = `<ul>${list.join("")}</ul>`;
+}
+
+function addFood(e) {
+  e.preventDefault();
+  console.dir(e.target);
+  const title = foodTitle.value.trim();
+  const date = expirationDate.value;
+  console.log(title, date);
+  const payload = {
+    title: title,
+    expirationdate: date,
+    category: "default",
+  };
+
+  fetch(`${url}/fooditems`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((response) => {
+      console.log(response);
+      // empty form
+      foodTitle.value = "";
+      expirationDate.value = "";
+      // retrieve latest food
+      getFood();
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
