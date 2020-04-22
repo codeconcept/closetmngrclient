@@ -101,6 +101,10 @@ function deleteFoodItem(e) {
   }
   const parentDiv = e.target.parentElement;
   const foodItemId = e.target.parentNode.id;
-  console.dir(e.target.parentNode);
-  console.dir(foodItemId);
+  fetch(`${url}/fooditems/${foodItemId}`, {
+    method: "DELETE",
+  }).then((res) => {
+    console.log(res.json());
+    getFood();
+  });
 }
